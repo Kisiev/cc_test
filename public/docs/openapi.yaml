@@ -1,0 +1,70 @@
+openapi: 3.0.3
+info:
+    title: Laravel
+    description: ''
+    version: 1.0.0
+servers:
+    -
+        url: 'http://127.0.0.1:8000'
+paths:
+    /api/mailer/sendToEmail:
+        post:
+            summary: 'Отправка сообщения на фиксированный E-mail'
+            description: ''
+            parameters:
+                -
+                    in: header
+                    name: Content-Type
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+                -
+                    in: header
+                    name: Accept
+                    description: ''
+                    example: application/json
+                    schema:
+                        type: string
+            responses:
+                200:
+                    description: '200'
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example: {  }
+                                properties: {  }
+                422:
+                    description: '422'
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: "{\n\t\"errors\": {\n\t\t\"message\": [\n\t\t\t'Обязательное поле',\n\t\t\t'Минимум 3 символа',\n\t\t\t'Максимум 200 символов'\n\t\t]\n\t}\n}"
+                429:
+                    description: '429'
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                example:
+                                    message: 'Too Many Attempts.'
+                                properties:
+                                    message: { type: string, example: 'Too Many Attempts.' }
+            tags:
+                - Endpoints
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                message:
+                                    type: string
+                                    description: 'Текст сообщения'
+                                    example: eum
+                            required:
+                                - message
+            security: []
