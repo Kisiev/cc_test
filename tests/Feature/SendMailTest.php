@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Queue;
-use App\Jobs\SendToEmailJob;
+use App\Jobs\SendMessageJob;
 class SendMailTest extends TestCase
 {
 	public function testValidationMessage()
@@ -45,12 +45,15 @@ class SendMailTest extends TestCase
 	public function testSendValidMessageToEmail()
 	{
 		Queue::fake();
-
+		$messageText = Str::random(20);
 		$response = $this->json('POST', '/api/mailer/sendToEmail', [
-			'message' => Str::random(20)
+			'message' => $messageText
 		]);
 
 		$response->assertStatus(200);
-		Queue::assertPushed(SendToEmailJob::class);
+		$this->assertDatabaseHas('messages', [
+			'text' => $messageText
+		]);
+		Queue::assertPushed(SendMessageJob::class);
 	}
 }
