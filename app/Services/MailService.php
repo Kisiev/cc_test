@@ -5,7 +5,7 @@ class MailService implements SendMessageInterface
 {
 	public function send($message)
 	{
-		$toEmail = config('SUPPORT_EMAIL');
+		$toEmail = config('app.support_email');
 		// TO DO
 		return true;
 	}
