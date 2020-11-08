@@ -17,4 +17,4 @@ use App\Http\Controllers\MailerController;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::post('/mailer/sendToEmail', [MailerController::class, 'sendToEmail'])->middleware('throttle:5,1');
+Route::post('/mailer/sendToEmail', [MailerController::class, 'sendToEmail'])->middleware('throttle:10,1');

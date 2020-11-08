@@ -12,6 +12,7 @@ class SendMailTest extends TestCase
 {
 	public function testValidationMessage()
 	{
+		$this->artisan('cache:clear');
 		// пустое сообещние
 		$response = $this->json('POST', '/api/mailer/sendToEmail');
 		$response->assertStatus(422);
@@ -44,6 +45,7 @@ class SendMailTest extends TestCase
 	}
 	public function testSendValidMessageToEmail()
 	{
+		$this->artisan('cache:clear');
 		Queue::fake();
 		$messageText = Str::random(20);
 		$response = $this->json('POST', '/api/mailer/sendToEmail', [
@@ -55,5 +57,29 @@ class SendMailTest extends TestCase
 			'text' => $messageText
 		]);
 		Queue::assertPushed(SendMessageJob::class);
+	}
+	public function testSendManyRequests()
+	{
+		$this->artisan('cache:clear');
+		Queue::fake();
+		for ($index = 0; $index < 10; $index ++){
+			$messageText = Str::random(20);
+			$response = $this->json('POST', '/api/mailer/sendToEmail', [
+				'message' => $messageText
+			]);
+			$response->assertStatus(200);
+			$this->assertDatabaseHas('messages', [
+				'text' => $messageText
+			]);
+		}
+
+		$messageText = Str::random(20);
+		$response = $this->json('POST', '/api/mailer/sendToEmail', [
+			'message' => $messageText
+		]);
+		$this->assertDatabaseMissing('messages', [
+			'text' => $messageText
+		]);
+		$response->assertStatus(429);
 	}
 }
