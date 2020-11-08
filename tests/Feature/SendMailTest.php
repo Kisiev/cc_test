@@ -38,7 +38,7 @@ class SendMailTest extends TestCase
 		$response->assertStatus(422);
 		$response->assertJson([
 			'errors' => [
-				'message' => ['Максимум 200 символа']
+				'message' => ['Максимум 200 символов']
 			]
 		]);
 	}
